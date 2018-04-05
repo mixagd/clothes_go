@@ -97,6 +97,21 @@ func findCloth(id string) (Cloth, error) {
 	}
 }
 
+func deleteCloth(id string) {
+	sqlStatement := `DELETE FROM clothes WHERE id = $1;`
+	_, err := db.Exec(sqlStatement, id)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func deleteClothByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	vars := mux.Vars(r)
+	deleteCloth(vars["id"])
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func main() {
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
@@ -117,5 +132,6 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/clothes", getAllClothes).Methods("GET")
 	r.HandleFunc("/clothes/{id}", getClothByID).Methods("GET")
+	r.HandleFunc("/clothes/{id}", deleteClothByID).Methods("DELETE")
 	http.ListenAndServe("0.0.0.0:8080", r)
 }
