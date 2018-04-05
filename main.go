@@ -112,6 +112,38 @@ func deleteClothByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func updateClothByID(w http.ResponseWriter, r *http.Request) {
+	u := make(map[string]interface{})
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(b, &u)
+	if err != nil {
+		panic(err)
+	}
+	vars := mux.Vars(r)
+	strTmpl := `UPDATE clothes SET %s WHERE id = $1;`
+	vals := make([]interface{}, 0)
+	vals = append(vals, vars["id"])
+	strstr := ""
+	strcomma := ""
+	cntVal := 2
+	for k, v := range u {
+		fmt.Printf("%v => %v\n", k, v)
+		strstr = strstr + strcomma + fmt.Sprintf("%s=$%d", k, cntVal)
+		//fmt.Sprintf("%s %s %s = $%d", strcomma, strstr, k, cntVal)
+		cntVal = cntVal + 1
+		strcomma = ","
+		vals = append(vals, v)
+	}
+	fmt.Println(strstr)
+	strQuery := fmt.Sprintf(strTmpl, strstr)
+	fmt.Printf("%s\n%v\n", strQuery, vals)
+	w.WriteHeader(http.StatusOK)
+}
+
+
 func main() {
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
@@ -133,5 +165,6 @@ func main() {
 	r.HandleFunc("/clothes", getAllClothes).Methods("GET")
 	r.HandleFunc("/clothes/{id}", getClothByID).Methods("GET")
 	r.HandleFunc("/clothes/{id}", deleteClothByID).Methods("DELETE")
+	r.HandleFunc("/clothes/{id}", updateClothByID).Methods("PUT")
 	http.ListenAndServe("0.0.0.0:8080", r)
 }
