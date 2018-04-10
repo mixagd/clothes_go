@@ -112,7 +112,7 @@ func deleteClothByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func updateClothByID(w http.ResponseWriter, r *http.Request) {
+func updateClothByIDOLD(w http.ResponseWriter, r *http.Request) {
 	u := make(map[string]interface{})
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -141,6 +141,66 @@ func updateClothByID(w http.ResponseWriter, r *http.Request) {
 	strQuery := fmt.Sprintf(strTmpl, strstr)
 	fmt.Printf("%s\n%v\n", strQuery, vals)
 	w.WriteHeader(http.StatusOK)
+}
+
+func updateClothByID(w http.ResponseWriter, r *http.Request) {
+	var myCloth = Cloth{}
+
+	vars := mux.Vars(r)
+	clothID := vars["id"]
+
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	u := make(map[string]interface{})
+	err = json.Unmarshal(b, &u)
+	var requiredFields = []string{"colour", "fit", "type", "owner"}
+	var missingFields = make([]string, 0)
+	allFound := true
+	for _, k := range requiredFields {
+		if _, ok := u[k]; !ok {
+			allFound = false
+			missingFields = append(missingFields, k)
+		}
+	}
+
+	if !allFound {
+		w.WriteHeader(http.StatusBadRequest)
+		bd := fmt.Sprintf("Missing fields: %v", missingFields)
+		w.Write([]byte(bd))
+		return
+	}
+
+	err = json.Unmarshal(b, &myCloth)
+	if err != nil {
+		panic(err)
+	}
+
+	strSQL := `UPDATE clothes SET type=$1, colour=$2,
+		fit=$3, owner=$4 WHERE id=$5;
+	`
+	_, err = db.Exec(strSQL, myCloth.Type, myCloth.Colour,
+		myCloth.Fit,
+		myCloth.Owner, clothID)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	cloclo, err := findCloth(clothID)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		bdExplain := fmt.Sprintf("Error while retrieving cloth with id %s: %v",
+			clothID, err.Error())
+		w.Write([]byte(bdExplain))
+		return
+	}
+	bd, err := json.Marshal(cloclo)
+	w.WriteHeader(http.StatusOK)
+	w.Write(bd)
 }
 
 
