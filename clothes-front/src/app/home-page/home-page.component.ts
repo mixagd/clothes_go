@@ -9,14 +9,8 @@ import {ClothesService} from '../clothes.service';
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css']
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent {
 
-  clothes$: Observable<Cloth[]>;
 
-  constructor(private clothesService: ClothesService) {}
-
-  ngOnInit() {
-    this.clothes$ = this.clothesService.getAllClothes();
-  }
 
 }

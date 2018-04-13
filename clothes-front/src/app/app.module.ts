@@ -7,17 +7,21 @@ import { HomePageComponent } from './home-page/home-page.component';
 import {ClothesService} from './clothes.service';
 import {HttpClientModule} from '@angular/common/http';
 import { ClothItemComponent } from './cloth-item/cloth-item.component';
+import {AppRouting} from './/app-routing.module';
+import { ClothesComponent } from './clothes/clothes.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomePageComponent,
-    ClothItemComponent
+    ClothItemComponent,
+    ClothesComponent
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    AppRouting
   ],
   providers: [ClothesService],
   bootstrap: [AppComponent]
