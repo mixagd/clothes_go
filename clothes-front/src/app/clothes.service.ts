@@ -17,4 +17,12 @@ export class ClothesService {
     return this.http.post<Cloth>('/api/clothes/new', {type: cl.type, colour: cl.colour, fit: cl.fit, owner: cl.owner});
   }
 
+  getCloth(id: string): Observable<Cloth> {
+    return this.http.get<Cloth>(`/api/clothes/${id}`);
+  }
+
+  updateCloth(id: string, cl: ClothFormData): Observable<Cloth> {
+    return this.http.put<Cloth>(`/api/clothes/${id}`, {type: cl.type, colour: cl.colour, fit: cl.fit, owner: cl.owner});
+  }
+
 }
