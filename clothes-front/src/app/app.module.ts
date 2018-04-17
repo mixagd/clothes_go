@@ -7,8 +7,11 @@ import { HomePageComponent } from './home-page/home-page.component';
 import {ClothesService} from './clothes.service';
 import {HttpClientModule} from '@angular/common/http';
 import { ClothItemComponent } from './cloth-item/cloth-item.component';
-import {AppRouting} from './/app-routing.module';
+import {appRoutes} from './/app-routing.module';
 import { ClothesComponent } from './clothes/clothes.component';
+import {RouterModule} from '@angular/router';
+import { ClothFormComponent } from './cloth-form/cloth-form.component';
+import {FormsModule} from '@angular/forms';
 
 
 @NgModule({
@@ -16,12 +19,15 @@ import { ClothesComponent } from './clothes/clothes.component';
     AppComponent,
     HomePageComponent,
     ClothItemComponent,
-    ClothesComponent
+    ClothesComponent,
+    ClothFormComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRouting
+    RouterModule.forRoot(appRoutes),
+    FormsModule
+    // AppRouting
   ],
   providers: [ClothesService],
   bootstrap: [AppComponent]
