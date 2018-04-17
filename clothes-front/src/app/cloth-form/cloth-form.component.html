@@ -1,0 +1,30 @@
+<form #f="ngForm"
+      class="ui form"
+      (ngSubmit)="createOrUpdateCloth(f.valid)"
+      novalidate
+>
+  <div class="field" [class.error]="type.invalid && (type.dirty || type.touched)">
+    <label>Type</label>
+    <input type="text" name="type" placeholder="Cloth Type" [(ngModel)]="formData.type" #type="ngModel" required/>
+  </div>
+
+  <div class="two fields">
+    <div class="field" [class.error]="colour.invalid && (colour.dirty || colour.touched)">
+      <label>Colour</label>
+      <input type="text" name="colour" placeholder="Cloth Colour" [(ngModel)]="formData.colour" #colour="ngModel"
+             required/>
+    </div>
+    <div class="field" [class.error]="clFit.invalid && (clFit.dirty || clFit.touched)">
+      <label>Fit</label>
+      <input type="text" name="clFit" placeholder="Cloth Fit" [(ngModel)]="formData.fit" #clFit="ngModel" required/>
+    </div>
+  </div>
+
+    <div class="field" [class.error]="owner.invalid && (owner.dirty || owner.touched)">
+      <label>Owner</label>
+      <input type="text" name="owner" placeholder="Cloth Owner" [(ngModel)]="formData.owner" #owner="ngModel" required/>
+    </div>
+
+  <button type="submit" class="ui button" [disabled]="!(f.valid && f.dirty)">Save</button>
+  <div class="ui button" (click)="cancel()" routerLink="/plants/drafts">Cancel</div>
+</form>

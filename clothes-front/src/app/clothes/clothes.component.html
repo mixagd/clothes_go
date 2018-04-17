@@ -1,0 +1,30 @@
+<div class="ui basic grid">
+  <div class="six column row">
+    <div class="ui right floated column">
+      <div class="ui basic segment">
+        <button class="ui button" routerLink="/clothes/new">New Cloth</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="ui container">
+
+      <div class="ui four cards">
+        <app-cloth-item class="ui link card" *ngFor="let c of clothes$ | async" [cloth]="c" [routerLink]="['/clothes/edit', c.id]"></app-cloth-item>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
